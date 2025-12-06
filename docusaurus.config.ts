@@ -1,5 +1,5 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
@@ -35,7 +35,7 @@ const config: Config = {
     locales: ['en'],
   },
 
- markdown: {
+  markdown: {
     mermaid: true,
   },
 
@@ -93,7 +93,7 @@ const config: Config = {
           position: 'left',
           label: 'Documents',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        { to: '/blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/facebook/docusaurus',
           label: 'GitHub',
@@ -109,7 +109,7 @@ const config: Config = {
           items: [
             {
               label: 'Document',
-              to: '/docs/concept',
+              to: '/docs/category/architecture-universal-simulation-engine',
             },
           ],
         },
