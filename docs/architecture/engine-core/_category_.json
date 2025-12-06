@@ -1,0 +1,9 @@
+{
+  "label": "Layer 1: Engine Core",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "slug": "architecture/engine-core",
+    "description": "5 minutes to learn the most important Docusaurus concepts."
+  }
+}

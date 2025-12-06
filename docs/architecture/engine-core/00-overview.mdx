@@ -1,0 +1,208 @@
+---
+id: 00-overview
+title: Overview
+sidebar_label: 00. Overview
+sidebar_position: 1
+---
+
+import MermaidZoomable from '@site/src/components/MermaidZoomable';
+
+# Engine Core Overview
+
+Below is the complete UML class diagram of the Specular Engine Core.
+Use your mouse to drag and zoom the diagram.
+
+<MermaidZoomable chart={`
+classDiagram
+
+    %% =====================================================
+    %% 01. Time Engine
+    %% =====================================================
+    class TimeEngine {
+        +now() number
+        +delta() number
+        +update() void
+        +schedule(delay, callback) void
+    }
+
+    %% =====================================================
+    %% 02. Event Bus
+    %% =====================================================
+    class EventBus {
+        +emit(event) void
+        +on(type, handler) void
+        +off(type, handler) void
+    }
+
+    class EngineEvent {
+        +timestamp number
+        +type string
+        +payload any
+    }
+
+    EventBus --> EngineEvent : emits
+
+    %% =====================================================
+    %% 03. Actor Framework
+    %% =====================================================
+    class ActorBase {
+        +id string
+        +type string
+        +attributes DynamicFields
+        +inventory Item[]
+        +tags string[]
+        +modules ActorModule[]
+        +update(context) void
+        +availableActions(context) Action[]
+    }
+
+    class ActorModule {
+        +id string
+        +onAttach(actor) void
+        +onDetach(actor) void
+        +onUpdate(actor, context) void
+        +getActions(actor, context) Action[]
+    }
+
+    ActorBase --> DynamicFields
+    ActorBase --> ActorModule
+
+    %% =====================================================
+    %% 04. Action Engine
+    %% =====================================================
+    class Action {
+        +id string
+        +name string
+        +canExecute(actor, context) boolean
+        +execute(actor, context) ActionResult
+    }
+
+    class ActionRegistry {
+        +register(action) void
+        +get(id) Action
+    }
+
+    ActorModule --> Action : produces
+    ActionRegistry --> Action : stores
+
+    %% =====================================================
+    %% 05. State System
+    %% =====================================================
+    class DynamicFields {
+        +get(key) any
+        +set(key, value) void
+        +has(key) boolean
+        +addModifier(key, modifier) void
+        +removeModifier(id) void
+        +getComputed(key) any
+    }
+
+    class AttributeModifier {
+        +id string
+        +type string
+        +value any
+    }
+
+    DynamicFields --> AttributeModifier
+
+    %% =====================================================
+    %% 06. System Registry
+    %% =====================================================
+    class EngineSystem {
+        +id string
+        +priority number
+        +update(context) void
+    }
+
+    class SystemRegistry {
+        +register(system) void
+        +list() EngineSystem[]
+    }
+
+    SystemRegistry --> EngineSystem
+
+    %% =====================================================
+    %% 07. UI Framework
+    %% =====================================================
+    class UIFramework {
+        +registerSlot(id, slot) void
+        +getSlots() UISlot[]
+        +render() void
+    }
+
+    class UISlot {
+        +id string
+        +components UIComponent[]
+    }
+
+    UIFramework --> UISlot
+
+    %% =====================================================
+    %% 08. Save / Load
+    %% =====================================================
+    class SaveSystem {
+        +save() SerializedWorld
+        +load(world) void
+    }
+
+    %% =====================================================
+    %% 09. Deterministic Randomness
+    %% =====================================================
+    class Random {
+        +seed(value) void
+        +next() number
+        +range(min, max) number
+    }
+
+    %% =====================================================
+    %% 10. Asset Loader
+    %% =====================================================
+    class AssetLoader {
+        +loadJSON(path) any
+        +loadText(path) string
+        +loadBinary(path) ArrayBuffer
+    }
+
+    %% =====================================================
+    %% 11. Type Registry
+    %% =====================================================
+    class TypeRegistry {
+        +register(typeName, definition) void
+        +get(typeName) any
+    }
+
+    %% =====================================================
+    %% 12. Scheduler
+    %% =====================================================
+    class Scheduler {
+        +add(system) void
+        +update(context) void
+    }
+
+    Scheduler --> EngineSystem : updates
+    Scheduler --> ActorBase : updates
+
+    %% =====================================================
+    %% 13. VFS
+    %% =====================================================
+    class VFS {
+        +mount(path, priority) void
+        +unmount(path) void
+        +exists(virtualPath) boolean
+        +resolve(virtualPath) string
+        +readFile(virtualPath) any
+    }
+
+    AssetLoader --> VFS : uses
+
+    %% =====================================================
+    %% 14. Serialization
+    %% =====================================================
+    class Serializer {
+        +serialize(world) SerializedWorld
+        +deserialize(data) World
+    }
+
+    SaveSystem --> Serializer : uses
+
+`} />
